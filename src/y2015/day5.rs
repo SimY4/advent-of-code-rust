@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 const VOWELS: [char; 5] = [ 'a', 'e', 'i', 'o', 'u' ];
 const BAD: [&str; 4] = [ "ab", "cd", "pq", "xy" ];
 

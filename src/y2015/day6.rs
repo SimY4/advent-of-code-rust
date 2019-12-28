@@ -16,14 +16,11 @@ fn parse_line(line: &str) -> Action {
         })
         .collect::<Vec<(usize, usize)>>();
     let (xy1, xy2) = (numbers[0], numbers[1]);
-    if line.starts_with("turn on ") {
-        Action::TurnOn(xy1, xy2)
-    } else if line.starts_with("turn off ") {
-        Action::TurnOff(xy1, xy2)
-    } else if line.starts_with("toggle ") {
-        Action::Toggle(xy1, xy2)
-    } else {
-        unreachable!()
+    match line {
+        _ if line.starts_with("turn on ") => Action::TurnOn(xy1, xy2),
+        _ if line.starts_with("turn off ") => Action::TurnOff(xy1, xy2),
+        _ if line.starts_with("toggle ") => Action::Toggle(xy1, xy2),
+        _ => unreachable!()
     }
 }
 
@@ -53,14 +50,14 @@ pub fn solve(input: &str) -> usize {
 }
 
 pub fn solve2(input: &str) -> i32 {
-    let mut grid = [0u8; 1000000];
+    let mut grid = [0i8; 1000000];
     input.lines()
         .map(parse_line)
         .for_each(|action| {
             match action {
-                Action::TurnOn(xy1, xy2) => update(&mut grid, xy1, xy2, |i| i + 1),
-                Action::TurnOff(xy1, xy2) => update(&mut grid, xy1, xy2, |i| max(0, i - 1)),
-                Action::Toggle(xy1, xy2) => update(&mut grid, xy1, xy2, |i| i + 2)
+                Action::TurnOn(xy1, xy2) => update(&mut grid, xy1, xy2, |i| i + 1i8),
+                Action::TurnOff(xy1, xy2) => update(&mut grid, xy1, xy2, |i| max(0, i - 1i8)),
+                Action::Toggle(xy1, xy2) => update(&mut grid, xy1, xy2, |i| i + 2i8)
             }
         });
     grid.iter()

@@ -5,6 +5,7 @@ pub mod day4;
 pub mod day5;
 pub mod day6;
 pub mod day7;
+pub mod day8;
 
 pub fn run() {
     println!("y2015:");
@@ -29,4 +30,7 @@ pub fn run() {
     println!("  day7:");
     println!("      solution #1: {:?}", day7::solve(day7::INPUT));
     println!("      solution #2: {:?}", day7::solve2(day7::INPUT));
+    println!("  day8:");
+    println!("      solution #1: {:?}", day8::solve(day8::INPUT));
+    println!("      solution #2: {:?}", day8::solve2(day8::INPUT));
 }

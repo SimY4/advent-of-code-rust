@@ -85,7 +85,7 @@ fn run_program(opcodes: &mut Vec<i32>, input: &mut Vec<i32>) -> Vec<i32> {
                 pointer = pointer + 4;
             },
             99 => return output,
-            _ => unreachable!("got {}, {}, {}", op, m1, m2)
+            _ => unreachable!()
         }
     }
 }

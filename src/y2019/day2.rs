@@ -5,25 +5,17 @@ fn run_program(opcodes: &mut Vec<usize>) {
     loop {
         match opcodes.get(pointer) {
             Some(1) => {
-                let x = *opcodes.get(pointer + 1)
-                    .and_then(|x| opcodes.get(*x))
-                    .unwrap();
-                let y = *opcodes.get(pointer + 2)
-                    .and_then(|y| opcodes.get(*y))
-                    .unwrap();
-                let z = *opcodes.get(pointer + 3).unwrap();
-                replace(&mut opcodes[z], x + y);
+                if let [x, y, z] = opcodes[pointer + 1..=pointer + 3] {
+                    let (xx, yy, zz) = (opcodes[x], opcodes[y], &mut opcodes[z]);
+                    replace(zz, xx + yy);
+                }
                 pointer = pointer + 4;
             },
             Some(2) => {
-                let x = *opcodes.get(pointer + 1)
-                    .and_then(|x| opcodes.get(*x))
-                    .unwrap();
-                let y = *opcodes.get(pointer + 2)
-                    .and_then(|y| opcodes.get(*y))
-                    .unwrap();
-                let z = *opcodes.get(pointer + 3).unwrap();
-                replace(&mut opcodes[z], x * y);
+                if let [x, y, z] = opcodes[pointer + 1..=pointer + 3] {
+                    let (xx, yy, zz) = (opcodes[x], opcodes[y], &mut opcodes[z]);
+                    replace(zz, xx * yy);
+                }
                 pointer = pointer + 4;
             },
             Some(99) => return,

@@ -24,9 +24,8 @@ fn parse_line(line: &str) -> Action {
     }
 }
 
-fn update<F, A>(grid: &mut [A], (x1, y1): (usize, usize), (x2, y2): (usize, usize), f: F)
+fn update<A>(grid: &mut [A], (x1, y1): (usize, usize), (x2, y2): (usize, usize), f: fn(A) -> A)
 where
-    F: Fn(A) -> A,
     A: Copy,
 {
     for x in x1..=x2 {

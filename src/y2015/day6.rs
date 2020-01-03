@@ -7,11 +7,11 @@ enum Action {
 }
 
 fn parse_line(line: &str) -> Action {
-    let numbers = line.split(' ')
+    let numbers = line
+        .split(' ')
         .filter_map(|chunk| {
-            let split: Result<Vec<usize>, _> = chunk.split(',')
-                .map(|s| s.parse::<usize>())
-                .collect();
+            let split: Result<Vec<usize>, _> =
+                chunk.split(',').map(|s| s.parse::<usize>()).collect();
             split.ok().map(|xs| (xs[0], xs[1]))
         })
         .collect::<Vec<(usize, usize)>>();
@@ -20,11 +20,15 @@ fn parse_line(line: &str) -> Action {
         _ if line.starts_with("turn on ") => Action::TurnOn(xy1, xy2),
         _ if line.starts_with("turn off ") => Action::TurnOff(xy1, xy2),
         _ if line.starts_with("toggle ") => Action::Toggle(xy1, xy2),
-        _ => unreachable!()
+        _ => unreachable!(),
     }
 }
 
-fn update<F, A>(grid: &mut [A], (x1, y1): (usize, usize), (x2, y2): (usize, usize), f: F) where F: Fn(A) -> A, A: Copy {
+fn update<F, A>(grid: &mut [A], (x1, y1): (usize, usize), (x2, y2): (usize, usize), f: F)
+where
+    F: Fn(A) -> A,
+    A: Copy,
+{
     for x in x1..=x2 {
         for y in y1..=y2 {
             let coord = 1000 * x + y;
@@ -35,34 +39,28 @@ fn update<F, A>(grid: &mut [A], (x1, y1): (usize, usize), (x2, y2): (usize, usiz
 
 pub fn solve(input: &str) -> usize {
     let mut grid = [false; 1000000];
-    input.lines()
+    input
+        .lines()
         .map(parse_line)
-        .for_each(|action| {
-            match action {
-                Action::TurnOn(xy1, xy2) => update(&mut grid, xy1, xy2, |_| true),
-                Action::TurnOff(xy1, xy2) => update(&mut grid, xy1, xy2, |_| false),
-                Action::Toggle(xy1, xy2) => update(&mut grid, xy1, xy2, |b| !b)
-            }
+        .for_each(|action| match action {
+            Action::TurnOn(xy1, xy2) => update(&mut grid, xy1, xy2, |_| true),
+            Action::TurnOff(xy1, xy2) => update(&mut grid, xy1, xy2, |_| false),
+            Action::Toggle(xy1, xy2) => update(&mut grid, xy1, xy2, |b| !b),
         });
-    grid.iter()
-        .filter(|b| **b)
-        .count()
+    grid.iter().filter(|b| **b).count()
 }
 
 pub fn solve2(input: &str) -> i32 {
     let mut grid = [0i8; 1000000];
-    input.lines()
+    input
+        .lines()
         .map(parse_line)
-        .for_each(|action| {
-            match action {
-                Action::TurnOn(xy1, xy2) => update(&mut grid, xy1, xy2, |i| i + 1i8),
-                Action::TurnOff(xy1, xy2) => update(&mut grid, xy1, xy2, |i| max(0, i - 1i8)),
-                Action::Toggle(xy1, xy2) => update(&mut grid, xy1, xy2, |i| i + 2i8)
-            }
+        .for_each(|action| match action {
+            Action::TurnOn(xy1, xy2) => update(&mut grid, xy1, xy2, |i| i + 1i8),
+            Action::TurnOff(xy1, xy2) => update(&mut grid, xy1, xy2, |i| max(0, i - 1i8)),
+            Action::Toggle(xy1, xy2) => update(&mut grid, xy1, xy2, |i| i + 2i8),
         });
-    grid.iter()
-        .map(|i| *i as i32)
-        .sum()
+    grid.iter().map(|i| *i as i32).sum()
 }
 
 pub const INPUT: &str = "toggle 461,550 through 564,900\n\

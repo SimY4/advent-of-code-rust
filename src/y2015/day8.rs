@@ -7,15 +7,15 @@ fn count_escaped(line: &str) -> i32 {
             _ if _str.starts_with("\\x") => {
                 acc += 1;
                 _str = &_str[4..];
-            },
+            }
             _ if _str.starts_with("\\") => {
                 acc += 1;
                 _str = &_str[2..];
-            },
+            }
             _ => {
                 acc += 1;
                 _str = &_str[1..];
-            },
+            }
         }
     }
 }
@@ -29,37 +29,33 @@ fn count_unescaped(line: &str) -> i32 {
             _ if _str.starts_with("\\\"") => {
                 acc += 4;
                 _str = &_str[2..];
-            },
+            }
             _ if _str.starts_with("\"") || _str.starts_with("\\") => {
                 acc += 2;
                 _str = &_str[1..];
-            },
+            }
             _ => {
                 acc += 1;
                 _str = &_str[1..];
-            },
+            }
         }
     }
 }
 
 pub fn solve(input: &str) -> i32 {
-    input.lines()
-        .map(|line| line.trim())
-        .fold(0, |acc, line| {
-            let total_str = count_escaped(&line[1..line.len() - 1]);
-            let total_in_memory = line.len() as i32;
-            acc + total_in_memory - total_str
-        })
+    input.lines().map(|line| line.trim()).fold(0, |acc, line| {
+        let total_str = count_escaped(&line[1..line.len() - 1]);
+        let total_in_memory = line.len() as i32;
+        acc + total_in_memory - total_str
+    })
 }
 
 pub fn solve2(input: &str) -> i32 {
-    input.lines()
-        .map(|line| line.trim())
-        .fold(0, |acc, line| {
-            let total_unescaped = count_unescaped(line);
-            let total_in_memory = line.len() as i32;
-            acc + total_unescaped - total_in_memory
-        })
+    input.lines().map(|line| line.trim()).fold(0, |acc, line| {
+        let total_unescaped = count_unescaped(line);
+        let total_in_memory = line.len() as i32;
+        acc + total_unescaped - total_in_memory
+    })
 }
 
 pub const INPUT: &str = r#""\xa8br\x8bjr\""

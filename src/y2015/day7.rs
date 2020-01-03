@@ -10,7 +10,7 @@ impl Gate {
     fn new(s: &str) -> Gate {
         match s.parse::<i32>() {
             Ok(value) => Gate::Value(value),
-            Err(_) => Gate::Ref(s.to_string())
+            Err(_) => Gate::Ref(s.to_string()),
         }
     }
 }
@@ -29,115 +29,130 @@ fn parse_line(line: &str) -> Wire {
     let segments = line.split(' ').collect::<Vec<&str>>();
     match segments[..2] {
         [_, "->"] => Wire::Identity(Gate::new(segments[0]), segments[2].to_string()),
-        [_, "AND"] => Wire::And(Gate::new(segments[0]), Gate::new(segments[2]), segments[4].to_string()),
-        [_, "OR"] => Wire::Or(Gate::new(segments[0]), Gate::new(segments[2]), segments[4].to_string()),
-        [_, "LSHIFT"] => Wire::LShift(Gate::new(segments[0]), segments[2].parse::<i32>().unwrap(), segments[4].to_string()),
-        [_, "RSHIFT"] => Wire::RShift(Gate::new(segments[0]), segments[2].parse::<i32>().unwrap(), segments[4].to_string()),
+        [_, "AND"] => Wire::And(
+            Gate::new(segments[0]),
+            Gate::new(segments[2]),
+            segments[4].to_string(),
+        ),
+        [_, "OR"] => Wire::Or(
+            Gate::new(segments[0]),
+            Gate::new(segments[2]),
+            segments[4].to_string(),
+        ),
+        [_, "LSHIFT"] => Wire::LShift(
+            Gate::new(segments[0]),
+            segments[2].parse::<i32>().unwrap(),
+            segments[4].to_string(),
+        ),
+        [_, "RSHIFT"] => Wire::RShift(
+            Gate::new(segments[0]),
+            segments[2].parse::<i32>().unwrap(),
+            segments[4].to_string(),
+        ),
         ["NOT", _] => Wire::Not(Gate::new(segments[1]), segments[3].to_string()),
-        _ => unreachable!()
+        _ => unreachable!(),
     }
 }
 
 fn iterate(signals: &mut HashMap<String, i32>, logic_gates: &mut Vec<Wire>) {
     loop {
         if logic_gates.is_empty() {
-           return;
+            return;
         }
-        logic_gates.retain(|wire| {
-            match wire {
-                Wire::Not(Gate::Ref(s), to) if signals.contains_key(s) => {
-                    signals.insert(to.clone(), !signals[s]);
-                    false
-                },
-                Wire::Not(Gate::Value(i), to) => {
-                    signals.insert(to.clone(), !*i);
-                    false
-                },
-                Wire::And(Gate::Ref(s1), Gate::Ref(s2), to) if signals.contains_key(s1) && signals.contains_key(s2) => {
-                    signals.insert(to.clone(), signals[s1] & signals[s2]);
-                    false
-                },
-                Wire::And(Gate::Value(i), Gate::Ref(s), to) if signals.contains_key(s) => {
-                    signals.insert(to.clone(), *i & signals[s]);
-                    false
-                },
-                Wire::And(Gate::Ref(s), Gate::Value(i), to) if signals.contains_key(s) => {
-                    signals.insert(to.clone(), signals[s] & *i);
-                    false
-                },
-                Wire::And(Gate::Value(i1), Gate::Value(i2), to) => {
-                    signals.insert(to.clone(), *i1 & *i2);
-                    false
-                },
-                Wire::Or(Gate::Ref(s1), Gate::Ref(s2), to) if signals.contains_key(s1) && signals.contains_key(s2) => {
-                    signals.insert(to.clone(), signals[s1] | signals[s2]);
-                    false
-                },
-                Wire::Or(Gate::Value(i), Gate::Ref(s), to) if signals.contains_key(s) => {
-                    signals.insert(to.clone(), *i | signals[s]);
-                    false
-                },
-                Wire::Or(Gate::Ref(s), Gate::Value(i), to) if signals.contains_key(s) => {
-                    signals.insert(to.clone(), signals[s] | *i);
-                    false
-                },
-                Wire::Or(Gate::Value(i1), Gate::Value(i2), to) => {
-                    signals.insert(to.clone(), *i1 | *i2);
-                    false
-                },
-                Wire::LShift(Gate::Ref(s), n, to) if signals.contains_key(s) => {
-                    signals.insert(to.clone(), signals[s] << n);
-                    false
-                },
-                Wire::LShift(Gate::Value(i), n, to) => {
-                    signals.insert(to.clone(), *i << n);
-                    false
-                },
-                Wire::RShift(Gate::Ref(s), n, to) if signals.contains_key(s) => {
-                    signals.insert(to.clone(), signals[s] >> n);
-                    false
-                },
-                Wire::RShift(Gate::Value(i), n, to) => {
-                    signals.insert(to.clone(), *i >> n);
-                    false
-                },
-                Wire::Identity(Gate::Ref(s), to) if signals.contains_key(s) => {
-                    signals.insert(to.clone(), signals[s]);
-                    false
-                },
-                Wire::Identity(Gate::Value(i), to) => {
-                    signals.insert(to.clone(), *i);
-                    false
-                },
-                _ => true
+        logic_gates.retain(|wire| match wire {
+            Wire::Not(Gate::Ref(s), to) if signals.contains_key(s) => {
+                signals.insert(to.clone(), !signals[s]);
+                false
             }
+            Wire::Not(Gate::Value(i), to) => {
+                signals.insert(to.clone(), !*i);
+                false
+            }
+            Wire::And(Gate::Ref(s1), Gate::Ref(s2), to)
+                if signals.contains_key(s1) && signals.contains_key(s2) =>
+            {
+                signals.insert(to.clone(), signals[s1] & signals[s2]);
+                false
+            }
+            Wire::And(Gate::Value(i), Gate::Ref(s), to) if signals.contains_key(s) => {
+                signals.insert(to.clone(), *i & signals[s]);
+                false
+            }
+            Wire::And(Gate::Ref(s), Gate::Value(i), to) if signals.contains_key(s) => {
+                signals.insert(to.clone(), signals[s] & *i);
+                false
+            }
+            Wire::And(Gate::Value(i1), Gate::Value(i2), to) => {
+                signals.insert(to.clone(), *i1 & *i2);
+                false
+            }
+            Wire::Or(Gate::Ref(s1), Gate::Ref(s2), to)
+                if signals.contains_key(s1) && signals.contains_key(s2) =>
+            {
+                signals.insert(to.clone(), signals[s1] | signals[s2]);
+                false
+            }
+            Wire::Or(Gate::Value(i), Gate::Ref(s), to) if signals.contains_key(s) => {
+                signals.insert(to.clone(), *i | signals[s]);
+                false
+            }
+            Wire::Or(Gate::Ref(s), Gate::Value(i), to) if signals.contains_key(s) => {
+                signals.insert(to.clone(), signals[s] | *i);
+                false
+            }
+            Wire::Or(Gate::Value(i1), Gate::Value(i2), to) => {
+                signals.insert(to.clone(), *i1 | *i2);
+                false
+            }
+            Wire::LShift(Gate::Ref(s), n, to) if signals.contains_key(s) => {
+                signals.insert(to.clone(), signals[s] << n);
+                false
+            }
+            Wire::LShift(Gate::Value(i), n, to) => {
+                signals.insert(to.clone(), *i << n);
+                false
+            }
+            Wire::RShift(Gate::Ref(s), n, to) if signals.contains_key(s) => {
+                signals.insert(to.clone(), signals[s] >> n);
+                false
+            }
+            Wire::RShift(Gate::Value(i), n, to) => {
+                signals.insert(to.clone(), *i >> n);
+                false
+            }
+            Wire::Identity(Gate::Ref(s), to) if signals.contains_key(s) => {
+                signals.insert(to.clone(), signals[s]);
+                false
+            }
+            Wire::Identity(Gate::Value(i), to) => {
+                signals.insert(to.clone(), *i);
+                false
+            }
+            _ => true,
         });
     }
 }
 
 pub fn solve(input: &str) -> Option<i32> {
-    let mut logic_gates = input.lines()
-        .map(parse_line)
-        .collect::<Vec<Wire>>();
+    let mut logic_gates = input.lines().map(parse_line).collect::<Vec<Wire>>();
     let mut signals = HashMap::with_capacity(logic_gates.len());
     iterate(&mut signals, &mut logic_gates);
     signals.get("a").copied()
 }
 
 pub fn solve2(input: &str) -> Option<i32> {
-    let logic_gates = input.lines()
-        .map(parse_line)
-        .collect::<Vec<Wire>>();
+    let logic_gates = input.lines().map(parse_line).collect::<Vec<Wire>>();
     let mut signals = HashMap::with_capacity(logic_gates.len());
     iterate(&mut signals, &mut logic_gates.to_vec());
     let a = signals["a"];
-    let new_logic_gates = logic_gates.iter()
+    let new_logic_gates = logic_gates
+        .iter()
         .filter_map(|wire| match wire {
             Wire::Identity(_, to) if to == "b" => None,
-            _ => Some(wire.clone())
+            _ => Some(wire.clone()),
         })
         .collect::<Vec<Wire>>();
-    let mut new_signals : HashMap<String, i32> = HashMap::with_capacity(new_logic_gates.len());
+    let mut new_signals: HashMap<String, i32> = HashMap::with_capacity(new_logic_gates.len());
     new_signals.insert("b".to_string(), a);
     iterate(&mut new_signals, &mut new_logic_gates.to_vec());
     new_signals.get("a").copied()

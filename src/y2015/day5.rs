@@ -1,5 +1,5 @@
-const VOWELS: [char; 5] = [ 'a', 'e', 'i', 'o', 'u' ];
-const BAD: [&str; 4] = [ "ab", "cd", "pq", "xy" ];
+const VOWELS: [char; 5] = ['a', 'e', 'i', 'o', 'u'];
+const BAD: [&str; 4] = ["ab", "cd", "pq", "xy"];
 
 fn pairs() -> Vec<String> {
     (0..26)
@@ -15,31 +15,35 @@ fn pairs() -> Vec<String> {
 
 pub fn solve(input: &str) -> usize {
     let pairs = &pairs();
-    input.lines()
-        .filter(|line| line.chars()
-            .filter(|ch| VOWELS.contains(ch))
-            .count() >= 3)
+    input
+        .lines()
+        .filter(|line| line.chars().filter(|ch| VOWELS.contains(ch)).count() >= 3)
         .filter(|line| pairs.iter().any(|pair| line.contains(pair)))
         .filter(|line| BAD.iter().all(|bad| !line.contains(bad)))
         .count()
 }
 
 pub fn solve2(input: &str) -> usize {
-    input.lines()
+    input
+        .lines()
         .map(|line| line.chars().collect::<Vec<char>>())
-        .filter(|line| line.windows(2)
-            .map(|w| line.iter()
-                .fold((0u16, false), |(cnt, last_match), ch| {
-                    if last_match && w[1] == *ch {
-                        (cnt + 1, false)
-                    } else if w[0] == *ch {
-                        (cnt, true)
-                    } else {
-                        (cnt, false)
-                    }
+        .filter(|line| {
+            line.windows(2)
+                .map(|w| {
+                    line.iter()
+                        .fold((0u16, false), |(cnt, last_match), ch| {
+                            if last_match && w[1] == *ch {
+                                (cnt + 1, false)
+                            } else if w[0] == *ch {
+                                (cnt, true)
+                            } else {
+                                (cnt, false)
+                            }
+                        })
+                        .0
                 })
-                .0)
-            .any(|cnt| cnt >= 2))
+                .any(|cnt| cnt >= 2)
+        })
         .filter(|line| line.windows(3).any(|w| w.first() == w.last()))
         .count()
 }

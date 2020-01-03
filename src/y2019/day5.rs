@@ -10,95 +10,97 @@ pub fn run_program(opcodes: &mut Vec<i32>, input: &mut Vec<i32>) -> Vec<i32> {
             1 => {
                 if let [x, y, z] = opcodes[pointer + 1..=pointer + 3] {
                     let (xx, yy, zz) = (
-                        if m1 == 1 { x } else { opcodes[x as usize] }, 
-                        if m2 == 1 { y } else { opcodes[y as usize] }, 
-                        &mut opcodes[z as usize]
+                        if m1 == 1 { x } else { opcodes[x as usize] },
+                        if m2 == 1 { y } else { opcodes[y as usize] },
+                        &mut opcodes[z as usize],
                     );
                     replace(zz, xx + yy);
                 }
                 pointer = pointer + 4;
-            },
+            }
             2 => {
                 if let [x, y, z] = opcodes[pointer + 1..=pointer + 3] {
                     let (xx, yy, zz) = (
-                        if m1 == 1 { x } else { opcodes[x as usize] }, 
-                        if m2 == 1 { y } else { opcodes[y as usize] }, 
-                        &mut opcodes[z as usize]
+                        if m1 == 1 { x } else { opcodes[x as usize] },
+                        if m2 == 1 { y } else { opcodes[y as usize] },
+                        &mut opcodes[z as usize],
                     );
                     replace(zz, xx * yy);
                 }
                 pointer = pointer + 4;
-            },
+            }
             3 => {
                 let x = opcodes[pointer + 1];
                 replace(&mut opcodes[x as usize], input.pop().unwrap());
                 pointer = pointer + 2;
-            },
+            }
             4 => {
                 let x = opcodes[pointer + 1];
                 let xx = if m1 == 1 { x } else { opcodes[x as usize] };
                 output.push(xx);
                 pointer = pointer + 2;
-            },
+            }
             5 => {
                 if let [x, y] = opcodes[pointer + 1..=pointer + 2] {
                     let (xx, yy) = (
-                        if m1 == 1 { x } else { opcodes[x as usize] }, 
-                        if m2 == 1 { y } else { opcodes[y as usize] }
+                        if m1 == 1 { x } else { opcodes[x as usize] },
+                        if m2 == 1 { y } else { opcodes[y as usize] },
                     );
                     pointer = if xx != 0 { yy as usize } else { pointer + 3 };
                 } else {
                     pointer = pointer + 3;
                 }
-            },
+            }
             6 => {
                 if let [x, y] = opcodes[pointer + 1..=pointer + 2] {
                     let (xx, yy) = (
-                        if m1 == 1 { x } else { opcodes[x as usize] }, 
-                        if m2 == 1 { y } else { opcodes[y as usize] }
+                        if m1 == 1 { x } else { opcodes[x as usize] },
+                        if m2 == 1 { y } else { opcodes[y as usize] },
                     );
                     pointer = if xx == 0 { yy as usize } else { pointer + 3 };
                 } else {
                     pointer = pointer + 3;
                 }
-            },
+            }
             7 => {
                 if let [x, y, z] = opcodes[pointer + 1..=pointer + 3] {
                     let (xx, yy, zz) = (
-                        if m1 == 1 { x } else { opcodes[x as usize] }, 
-                        if m2 == 1 { y } else { opcodes[y as usize] }, 
-                        &mut opcodes[z as usize]
+                        if m1 == 1 { x } else { opcodes[x as usize] },
+                        if m2 == 1 { y } else { opcodes[y as usize] },
+                        &mut opcodes[z as usize],
                     );
                     replace(zz, if xx < yy { 1 } else { 0 });
                 }
                 pointer = pointer + 4;
-            },
+            }
             8 => {
                 if let [x, y, z] = opcodes[pointer + 1..=pointer + 3] {
                     let (xx, yy, zz) = (
-                        if m1 == 1 { x } else { opcodes[x as usize] }, 
-                        if m2 == 1 { y } else { opcodes[y as usize] }, 
-                        &mut opcodes[z as usize]
+                        if m1 == 1 { x } else { opcodes[x as usize] },
+                        if m2 == 1 { y } else { opcodes[y as usize] },
+                        &mut opcodes[z as usize],
                     );
                     replace(zz, if xx == yy { 1 } else { 0 });
                 }
                 pointer = pointer + 4;
-            },
+            }
             99 => return output,
-            _ => unreachable!()
+            _ => unreachable!(),
         }
     }
 }
 
 pub fn solve(input: &str) -> Vec<i32> {
-    let mut opcodes = input.split(',')
+    let mut opcodes = input
+        .split(',')
         .map(|d| d.parse::<i32>().unwrap())
         .collect::<Vec<i32>>();
     run_program(&mut opcodes, &mut vec![1])
 }
 
 pub fn solve2(input: &str) -> Vec<i32> {
-    let mut opcodes = input.split(',')
+    let mut opcodes = input
+        .split(',')
         .map(|d| d.parse::<i32>().unwrap())
         .collect::<Vec<i32>>();
     run_program(&mut opcodes, &mut vec![5])

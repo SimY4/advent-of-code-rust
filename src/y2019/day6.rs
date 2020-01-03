@@ -1,7 +1,8 @@
 use std::collections::{HashMap, HashSet};
 
 fn graph(input: &str) -> HashMap<&str, &str> {
-    input.lines()
+    input
+        .lines()
         .map(|line| {
             let split = line.split(')').collect::<Vec<&str>>();
             (split[1], split[0])
@@ -17,8 +18,8 @@ fn chain(graph: &HashMap<&str, &str>, node: &str) -> Vec<String> {
             Some(parent) => {
                 chain.push((*parent).to_string());
                 n = *parent;
-            },
-            None => return chain
+            }
+            None => return chain,
         };
     }
 }
@@ -27,19 +28,26 @@ pub fn solve(input: &str) -> usize {
     let graph = graph(input);
     let keys = graph.keys().copied().collect::<Vec<&str>>();
     let values = graph.values().copied().collect::<Vec<&str>>();
-    let unique = [keys, values].concat().iter().copied()
+    let unique = [keys, values]
+        .concat()
+        .iter()
+        .copied()
         .collect::<HashSet<&str>>();
-    unique.iter()
-        .map(|n| chain(&graph, n).len())
-        .sum::<usize>()
+    unique.iter().map(|n| chain(&graph, n).len()).sum::<usize>()
 }
 
 pub fn solve2(input: &str) -> usize {
     let graph = graph(input);
     let you_chain = chain(&graph, "YOU");
     let san_chain = chain(&graph, "SAN");
-    let you_chain_diff = you_chain.iter().take_while(|n| !san_chain.contains(n)).count();
-    let san_chain_diff = san_chain.iter().take_while(|n| !you_chain.contains(n)).count();
+    let you_chain_diff = you_chain
+        .iter()
+        .take_while(|n| !san_chain.contains(n))
+        .count();
+    let san_chain_diff = san_chain
+        .iter()
+        .take_while(|n| !you_chain.contains(n))
+        .count();
     you_chain_diff + san_chain_diff
 }
 

@@ -1,18 +1,27 @@
 fn pairs(slice: &[i32]) -> Vec<(i32, i32)> {
-    slice[..slice.len() - 1].iter().enumerate()
-        .flat_map(|(i, x)| slice[i + 1..].iter()
-            .map(|y| (*x, *y))
-            .collect::<Vec<(i32, i32)>>())
+    slice[..slice.len() - 1]
+        .iter()
+        .enumerate()
+        .flat_map(|(i, x)| {
+            slice[i + 1..]
+                .iter()
+                .map(|y| (*x, *y))
+                .collect::<Vec<(i32, i32)>>()
+        })
         .collect()
 }
 
 pub fn solve(input: &str) -> i32 {
-    input.lines()
-        .map(|line| line.split('x')
-            .map(|dimension| dimension.parse::<i32>().unwrap())
-            .collect::<Vec<i32>>())
+    input
+        .lines()
+        .map(|line| {
+            line.split('x')
+                .map(|dimension| dimension.parse::<i32>().unwrap())
+                .collect::<Vec<i32>>()
+        })
         .map(|dimensions| {
-            let sides = pairs(&dimensions).iter()
+            let sides = pairs(&dimensions)
+                .iter()
                 .map(|(x, y)| *x * *y)
                 .collect::<Vec<i32>>();
             let surface = sides.iter().map(|side| 2 * *side).sum::<i32>();
@@ -23,14 +32,19 @@ pub fn solve(input: &str) -> i32 {
 }
 
 pub fn solve2(input: &str) -> i32 {
-    input.lines()
-        .map(|line| line.split('x')
-            .map(|dimension| dimension.parse::<i32>().unwrap())
-            .collect::<Vec<i32>>())
+    input
+        .lines()
+        .map(|line| {
+            line.split('x')
+                .map(|dimension| dimension.parse::<i32>().unwrap())
+                .collect::<Vec<i32>>()
+        })
         .map(|dimensions| {
-            let ribbon = pairs(&dimensions).iter()
+            let ribbon = pairs(&dimensions)
+                .iter()
                 .map(|(x, y)| 2 * *x + 2 * *y)
-                .min().unwrap();
+                .min()
+                .unwrap();
             let bow = dimensions.iter().product::<i32>();
             ribbon + bow
         })

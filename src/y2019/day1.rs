@@ -1,19 +1,23 @@
 use std::iter::successors;
 
 pub fn solve(input: &str) -> f64 {
-    input.lines()
+    input
+        .lines()
         .map(|line| line.parse::<i32>().unwrap())
         .map(|d| (d as f64 / 3.0).floor() - 2.0)
         .sum()
 }
 
 pub fn solve2(input: &str) -> f64 {
-    input.lines()
+    input
+        .lines()
         .map(|line| line.parse::<i32>().unwrap())
-        .map(|d| successors(Some(d as f64), |d| Some((d / 3.0).floor() - 2.0))
-            .skip(1)
-            .take_while(|d| *d >= 0.0)
-            .sum::<f64>())
+        .map(|d| {
+            successors(Some(d as f64), |d| Some((d / 3.0).floor() - 2.0))
+                .skip(1)
+                .take_while(|d| *d >= 0.0)
+                .sum::<f64>()
+        })
         .sum()
 }
 

@@ -1,17 +1,21 @@
-use itertools::Itertools;
 use super::day5;
+use itertools::Itertools;
 
 pub fn solve(input: &str) -> Option<i32> {
-    let opcodes = input.split(',')
+    let opcodes = input
+        .split(',')
         .map(|d| d.parse::<i32>().unwrap())
         .collect::<Vec<i32>>();
-    vec![0,1,2,3,4].iter()
+    vec![0, 1, 2, 3, 4]
+        .iter()
         .permutations(5)
-        .map(|amplifier| amplifier.iter().fold(0, |init, v| {
-            let mut _opcodes = opcodes.clone();
-            let out = day5::run_program(&mut _opcodes, &mut vec![init, **v]);
-            *out.last().unwrap()
-        }))
+        .map(|amplifier| {
+            amplifier.iter().fold(0, |init, v| {
+                let mut _opcodes = opcodes.clone();
+                let out = day5::run_program(&mut _opcodes, &mut vec![init, **v]);
+                *out.last().unwrap()
+            })
+        })
         .max()
 }
 

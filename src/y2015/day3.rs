@@ -6,12 +6,13 @@ fn navigate((x, y): &(i32, i32), direction: char) -> (i32, i32) {
         '>' => (*x + 1, *y),
         '^' => (*x, *y + 1),
         'v' => (*x, *y - 1),
-        _ => unreachable!()
+        _ => unreachable!(),
     }
 }
 
 pub fn solve(input: &str) -> usize {
-    input.chars()
+    input
+        .chars()
         .scan((0, 0), |acc, direction| {
             *acc = navigate(acc, direction);
             Some(*acc)
@@ -21,15 +22,19 @@ pub fn solve(input: &str) -> usize {
 }
 
 pub fn solve2(input: &str) -> usize {
-    let (f, s): (Vec<(usize, char)>, Vec<(usize, char)>) = input.chars().enumerate()
-        .partition(|(i, _)| 0 == *i & 1);
-    vec![f, s].iter()
-        .map(|directions| directions.iter()
-            .scan((0, 0), |acc, (_, direction)| {
-                *acc = navigate(acc, *direction);
-                Some(*acc)
-            })
-            .collect::<HashSet<(i32, i32)>>())
+    let (f, s): (Vec<(usize, char)>, Vec<(usize, char)>) =
+        input.chars().enumerate().partition(|(i, _)| 0 == *i & 1);
+    vec![f, s]
+        .iter()
+        .map(|directions| {
+            directions
+                .iter()
+                .scan((0, 0), |acc, (_, direction)| {
+                    *acc = navigate(acc, *direction);
+                    Some(*acc)
+                })
+                .collect::<HashSet<(i32, i32)>>()
+        })
         .fold(&mut HashSet::with_capacity(input.len() / 2), |acc, set| {
             acc.extend(set);
             acc

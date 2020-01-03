@@ -4,13 +4,16 @@ use std::iter::repeat;
 fn wire(line: &str) -> Vec<(i32, i32)> {
     line.split(',')
         .flat_map(|instruction| {
-            let (d, m) = (instruction.chars().next().unwrap(), instruction[1..].parse::<usize>().unwrap());
+            let (d, m) = (
+                instruction.chars().next().unwrap(),
+                instruction[1..].parse::<usize>().unwrap(),
+            );
             let direction = match d {
                 'R' => (1, 0),
                 'U' => (0, 1),
                 'L' => (-1, 0),
                 'D' => (0, -1),
-                _ => unreachable!()
+                _ => unreachable!(),
             };
             repeat(direction).take(m)
         })
@@ -22,18 +25,24 @@ fn wire(line: &str) -> Vec<(i32, i32)> {
 }
 
 pub fn solve(input: &str) -> Option<i32> {
-    input.lines()
+    input
+        .lines()
         .flat_map(|line| {
             let wire = wire(line);
-            wire[1..].iter()
+            wire[1..]
+                .iter()
                 .map(|coord| *coord)
                 .collect::<HashSet<(i32, i32)>>()
         })
-        .fold(&mut HashMap::new(), |acc: &mut HashMap<(i32, i32), usize>, coord| {
-            let count = acc.entry(coord).or_insert(0);
-            *count += 1;
-            acc
-        }).iter()
+        .fold(
+            &mut HashMap::new(),
+            |acc: &mut HashMap<(i32, i32), usize>, coord| {
+                let count = acc.entry(coord).or_insert(0);
+                *count += 1;
+                acc
+            },
+        )
+        .iter()
         .filter_map(|((x, y), cnt)| {
             if *cnt >= 2 {
                 Some(x.abs() + y.abs())
@@ -45,23 +54,29 @@ pub fn solve(input: &str) -> Option<i32> {
 }
 
 pub fn solve2(input: &str) -> Option<usize> {
-    input.lines()
+    input
+        .lines()
         .flat_map(|line| {
-            wire(line).iter()
+            wire(line)
+                .iter()
                 .enumerate()
                 .skip(1)
                 .map(|(i, coord)| (*coord, i + 1))
                 .collect::<HashMap<(i32, i32), usize>>()
         })
-        .fold(&mut HashMap::new(), |acc: &mut HashMap<(i32, i32), Vec<usize>>, (coord, idx)| {
-            match acc.get_mut(&coord) {
-                Some(vec) => vec.push(idx),
-                None => {
-                    acc.insert(coord, vec![idx]);
-                },
-            };
-            acc
-        }).iter()
+        .fold(
+            &mut HashMap::new(),
+            |acc: &mut HashMap<(i32, i32), Vec<usize>>, (coord, idx)| {
+                match acc.get_mut(&coord) {
+                    Some(vec) => vec.push(idx),
+                    None => {
+                        acc.insert(coord, vec![idx]);
+                    }
+                };
+                acc
+            },
+        )
+        .iter()
         .filter_map(|(_, idxs)| {
             if idxs.len() >= 2 {
                 Some(idxs.iter().sum())

@@ -1,6 +1,6 @@
 use std::mem::replace;
 
-fn run_program(opcodes: &mut Vec<i32>, input: &mut Vec<i32>) -> Vec<i32> {
+pub fn run_program(opcodes: &mut Vec<i32>, input: &mut Vec<i32>) -> Vec<i32> {
     let mut pointer: usize = 0;
     let mut output = Vec::new();
     loop {

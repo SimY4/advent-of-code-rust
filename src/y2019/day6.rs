@@ -9,8 +9,8 @@ fn graph(input: &str) -> HashMap<&str, &str> {
         .collect::<HashMap<&str, &str>>()
 }
 
-fn chain(graph: &HashMap<&str, &str>, acc: Vec<String>, node: &str) -> Vec<String> {
-    let mut chain = acc.clone();
+fn chain(graph: &HashMap<&str, &str>, node: &str) -> Vec<String> {
+    let mut chain = Vec::new();
     let mut n = node;
     loop {
         match graph.get(n) {
@@ -30,19 +30,17 @@ pub fn solve(input: &str) -> usize {
     let unique = [keys, values].concat().iter().copied()
         .collect::<HashSet<&str>>();
     unique.iter()
-        .map(|n| chain(&graph, vec![], n).len())
+        .map(|n| chain(&graph, n).len())
         .sum::<usize>()
 }
 
 pub fn solve2(input: &str) -> usize {
     let graph = graph(input);
-    let you_chain = chain(&graph, vec!["YOU".to_string()], "YOU");
-    let san_chain = chain(&graph, vec!["SAN".to_string()], "SAN");
-    println!("{:?}", you_chain);
-    println!("{:?}", san_chain);
+    let you_chain = chain(&graph, "YOU");
+    let san_chain = chain(&graph, "SAN");
     let you_chain_diff = you_chain.iter().take_while(|n| !san_chain.contains(n)).count();
     let san_chain_diff = san_chain.iter().take_while(|n| !you_chain.contains(n)).count();
-    you_chain_diff + san_chain_diff - 2
+    you_chain_diff + san_chain_diff
 }
 
 pub const INPUT: &str = "97W)B43\n\

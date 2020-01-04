@@ -1,11 +1,9 @@
+use std::iter::successors;
+
 fn digits(i: u32) -> Vec<u8> {
-    let mut digits = Vec::new();
-    let mut n = i;
-    while n > 9 {
-        digits.push((n % 10) as u8);
-        n = n / 10;
-    }
-    digits.push(n as u8);
+    let mut digits = successors(Some(i), |i| if *i > 0 { Some(i / 10) } else { None })
+        .map(|i| (i % 10) as u8)
+        .collect::<Vec<u8>>();
     digits.reverse();
     digits
 }
@@ -31,21 +29,18 @@ pub fn solve2(input: &str) -> usize {
         .map(digits)
         .filter(|ds| {
             ds.iter()
-                .fold(&mut Vec::new(), |acc, digit| {
-                    if acc.is_empty() {
-                        acc.push(vec![digit]);
-                    } else {
-                        let vec = acc.last_mut().unwrap();
-                        if vec[0] == digit {
-                            vec.push(digit);
-                        } else {
-                            acc.push(vec![digit])
-                        }
-                    };
-                    acc
-                })
+                .fold(
+                    &mut Vec::new(),
+                    |acc: &mut std::vec::Vec<(u8, usize)>, digit| {
+                        match acc.last_mut() {
+                            Some(pair) if pair.0 == *digit => *pair = (*digit, pair.1 + 1),
+                            Some(_) | None => acc.push((*digit, 1)),
+                        };
+                        acc
+                    },
+                )
                 .iter()
-                .any(|v| v.len() == 2)
+                .any(|v| v.1 == 2)
         })
         .filter(|ds| ds.windows(2).all(|pair| pair[0] <= pair[1]))
         .count()

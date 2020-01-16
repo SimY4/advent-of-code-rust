@@ -15,7 +15,7 @@ pub fn solve2(input: &str) -> usize {
         .chars()
         .scan(0, |acc, ch| {
             *acc = position(*acc, ch);
-            return Some(*acc);
+            Some(*acc)
         })
         .position(|pos| pos < 0)
         .unwrap()

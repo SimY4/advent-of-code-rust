@@ -1,11 +1,11 @@
 use std::collections::HashSet;
 
-fn navigate((x, y): &(i32, i32), direction: char) -> (i32, i32) {
+fn navigate((x, y): (i32, i32), direction: char) -> (i32, i32) {
     match direction {
-        '<' => (*x - 1, *y),
-        '>' => (*x + 1, *y),
-        '^' => (*x, *y + 1),
-        'v' => (*x, *y - 1),
+        '<' => (x - 1, y),
+        '>' => (x + 1, y),
+        '^' => (x, y + 1),
+        'v' => (x, y - 1),
         _ => unreachable!(),
     }
 }
@@ -14,7 +14,7 @@ pub fn solve(input: &str) -> usize {
     input
         .chars()
         .scan((0, 0), |acc, direction| {
-            *acc = navigate(acc, direction);
+            *acc = navigate(*acc, direction);
             Some(*acc)
         })
         .collect::<HashSet<(i32, i32)>>()
@@ -26,19 +26,16 @@ pub fn solve2(input: &str) -> usize {
         input.chars().enumerate().partition(|(i, _)| 0 == *i & 1);
     vec![f, s]
         .iter()
-        .map(|directions| {
+        .flat_map(|directions| {
             directions
                 .iter()
                 .scan((0, 0), |acc, (_, direction)| {
-                    *acc = navigate(acc, *direction);
+                    *acc = navigate(*acc, *direction);
                     Some(*acc)
                 })
                 .collect::<HashSet<(i32, i32)>>()
         })
-        .fold(&mut HashSet::with_capacity(input.len() / 2), |acc, set| {
-            acc.extend(set);
-            acc
-        })
+        .collect::<HashSet<(i32, i32)>>()
         .len()
 }
 

@@ -54,7 +54,8 @@ fn parse_line(line: &str) -> Wire {
     }
 }
 
-fn iterate(signals: &mut HashMap<String, i32>, logic_gates: &mut Vec<Wire>) {
+fn iterate(signals: &mut HashMap<String, i32>, logic_gates: Vec<Wire>) {
+    let mut logic_gates = logic_gates;
     loop {
         if logic_gates.is_empty() {
             return;
@@ -134,27 +135,28 @@ fn iterate(signals: &mut HashMap<String, i32>, logic_gates: &mut Vec<Wire>) {
 }
 
 pub fn solve(input: &str) -> Option<i32> {
-    let mut logic_gates = input.lines().map(parse_line).collect::<Vec<Wire>>();
+    let logic_gates = input.lines().map(parse_line).collect::<Vec<Wire>>();
     let mut signals = HashMap::with_capacity(logic_gates.len());
-    iterate(&mut signals, &mut logic_gates);
+    iterate(&mut signals, logic_gates);
     signals.get("a").copied()
 }
 
 pub fn solve2(input: &str) -> Option<i32> {
     let logic_gates = input.lines().map(parse_line).collect::<Vec<Wire>>();
     let mut signals = HashMap::with_capacity(logic_gates.len());
-    iterate(&mut signals, &mut logic_gates.to_vec());
+    iterate(&mut signals, logic_gates.clone());
     let a = signals["a"];
     let new_logic_gates = logic_gates
         .iter()
+        .cloned()
         .filter_map(|wire| match wire {
             Wire::Identity(_, to) if to == "b" => None,
-            _ => Some(wire.clone()),
+            _ => Some(wire),
         })
         .collect::<Vec<Wire>>();
     let mut new_signals: HashMap<String, i32> = HashMap::with_capacity(new_logic_gates.len());
     new_signals.insert("b".to_string(), a);
-    iterate(&mut new_signals, &mut new_logic_gates.to_vec());
+    iterate(&mut new_signals, new_logic_gates);
     new_signals.get("a").copied()
 }
 

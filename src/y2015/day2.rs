@@ -16,17 +16,17 @@ pub fn solve(input: &str) -> i32 {
         .lines()
         .map(|line| {
             line.split('x')
-                .map(|dimension| dimension.parse::<i32>().unwrap())
+                .flat_map(|dimension| dimension.parse::<i32>())
                 .collect::<Vec<i32>>()
         })
-        .map(|dimensions| {
+        .flat_map(|dimensions| {
             let sides = pairs(&dimensions)
                 .iter()
                 .map(|(x, y)| *x * *y)
                 .collect::<Vec<i32>>();
             let surface = sides.iter().map(|side| 2 * *side).sum::<i32>();
-            let extra = *sides.iter().min().unwrap();
-            surface + extra
+            let extra = sides.iter().min()?;
+            Some(surface + extra)
         })
         .sum()
 }
@@ -36,17 +36,16 @@ pub fn solve2(input: &str) -> i32 {
         .lines()
         .map(|line| {
             line.split('x')
-                .map(|dimension| dimension.parse::<i32>().unwrap())
+                .flat_map(|dimension| dimension.parse::<i32>())
                 .collect::<Vec<i32>>()
         })
-        .map(|dimensions| {
+        .flat_map(|dimensions| {
             let ribbon = pairs(&dimensions)
                 .iter()
                 .map(|(x, y)| 2 * *x + 2 * *y)
-                .min()
-                .unwrap();
+                .min()?;
             let bow = dimensions.iter().product::<i32>();
-            ribbon + bow
+            Some(ribbon + bow)
         })
         .sum()
 }

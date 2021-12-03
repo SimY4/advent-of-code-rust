@@ -4,9 +4,7 @@ pub fn solve(input: &str) -> usize {
         .map(|line| line.parse::<i32>().unwrap())
         .collect::<Vec<i32>>()
         .windows(2)
-        .filter(|pairs| {
-            pairs[0] < pairs[1]
-        })
+        .filter(|pairs| pairs[0] < pairs[1])
         .count()
 }
 
@@ -19,9 +17,7 @@ pub fn solve2(input: &str) -> usize {
         .map(|triples| triples.iter().sum())
         .collect::<Vec<i32>>()
         .windows(2)
-        .filter(|pairs| {
-            pairs[0] < pairs[1]
-        })
+        .filter(|pairs| pairs[0] < pairs[1])
         .count()
 }
 

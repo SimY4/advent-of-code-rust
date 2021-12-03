@@ -1,7 +1,7 @@
 enum Direction {
     Forward,
     Up,
-    Down
+    Down,
 }
 
 fn parse_line(line: &str) -> (Direction, i32) {
@@ -17,27 +17,24 @@ pub fn solve(input: &str) -> i32 {
     let (x, y) = input
         .lines()
         .map(parse_line)
-        .fold((0, 0), |(x, y), (dir, n)| {
-            match dir {
-                Direction::Forward => (x + n, y),
-                Direction::Up => (x, y - n),
-                Direction::Down => (x, y + n)
-            }
+        .fold((0, 0), |(x, y), (dir, n)| match dir {
+            Direction::Forward => (x + n, y),
+            Direction::Up => (x, y - n),
+            Direction::Down => (x, y + n),
         });
     x * y
 }
 
 pub fn solve2(input: &str) -> i32 {
-    let (x, y, _) = input
-        .lines()
-        .map(parse_line)
-        .fold((0, 0, 0), |(x, y, aim), (dir, n)| {
-            match dir {
+    let (x, y, _) =
+        input
+            .lines()
+            .map(parse_line)
+            .fold((0, 0, 0), |(x, y, aim), (dir, n)| match dir {
                 Direction::Forward => (x + n, y + aim * n, aim),
                 Direction::Up => (x, y, aim - n),
-                Direction::Down => (x, y, aim + n)
-            }
-        });
+                Direction::Down => (x, y, aim + n),
+            });
     x * y
 }
 

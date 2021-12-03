@@ -4,7 +4,7 @@ use std::collections::HashMap;
 struct Route(String, String, u8);
 
 fn parse_line(line: &str) -> Route {
-    match line.split(' ').collect::<Vec<&str>>()[..5] {
+    match line.split_whitespace().collect::<Vec<&str>>()[..5] {
         [from, "to", to, "=", distance] => Route(
             from.to_string(),
             to.to_string(),

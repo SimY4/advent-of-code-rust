@@ -8,7 +8,7 @@ enum Action {
 
 fn parse_line(line: &str) -> Action {
     let numbers = line
-        .split(' ')
+        .split_whitespace()
         .filter_map(|chunk| {
             let split: Result<Vec<usize>, _> =
                 chunk.split(',').map(|s| s.parse::<usize>()).collect();

@@ -26,7 +26,7 @@ enum Wire {
 }
 
 fn parse_line(line: &str) -> Wire {
-    let segments = line.split(' ').collect::<Vec<&str>>();
+    let segments = line.split_whitespace().collect::<Vec<&str>>();
     match segments[..2] {
         [_, "->"] => Wire::Identity(Gate::new(segments[0]), segments[2].to_string()),
         [_, "AND"] => Wire::And(

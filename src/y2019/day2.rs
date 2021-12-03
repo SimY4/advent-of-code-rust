@@ -1,5 +1,3 @@
-use std::mem::replace;
-
 fn run_program(opcodes: &mut Vec<usize>) {
     let mut pointer: usize = 0;
     loop {
@@ -7,14 +5,14 @@ fn run_program(opcodes: &mut Vec<usize>) {
             Some(1) => {
                 if let [x, y, z] = opcodes[pointer + 1..=pointer + 3] {
                     let (xx, yy, zz) = (opcodes[x], opcodes[y], &mut opcodes[z]);
-                    replace(zz, xx + yy);
+                    *zz = xx + yy;
                 }
                 pointer = pointer + 4;
             }
             Some(2) => {
                 if let [x, y, z] = opcodes[pointer + 1..=pointer + 3] {
                     let (xx, yy, zz) = (opcodes[x], opcodes[y], &mut opcodes[z]);
-                    replace(zz, xx * yy);
+                    *zz = xx * yy;
                 }
                 pointer = pointer + 4;
             }
@@ -29,8 +27,8 @@ pub fn solve(input: &str) -> Option<usize> {
         .split(',')
         .map(|d| d.parse::<usize>().unwrap())
         .collect::<Vec<usize>>();
-    replace(&mut opcodes[1], 12);
-    replace(&mut opcodes[2], 2);
+    opcodes[1] = 12;
+    opcodes[2] = 2;
     run_program(&mut opcodes);
     opcodes.get(0).cloned()
 }
@@ -45,8 +43,8 @@ pub fn solve2(input: &str) -> Option<(usize, usize)> {
             (0usize..=99usize)
                 .filter_map(|verb| {
                     let mut _opcodes = opcodes.clone();
-                    replace(&mut _opcodes[1], noun);
-                    replace(&mut _opcodes[2], verb);
+                    _opcodes[1] = noun;
+                    _opcodes[2] = verb;
                     run_program(&mut _opcodes);
                     _opcodes
                         .get(0)

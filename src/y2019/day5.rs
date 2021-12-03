@@ -1,5 +1,3 @@
-use std::mem::replace;
-
 pub fn run_program(opcodes: &mut Vec<i32>, input: &mut Vec<i32>) -> Vec<i32> {
     let mut pointer: usize = 0;
     let mut output = Vec::new();
@@ -14,7 +12,7 @@ pub fn run_program(opcodes: &mut Vec<i32>, input: &mut Vec<i32>) -> Vec<i32> {
                         if m2 == 1 { y } else { opcodes[y as usize] },
                         &mut opcodes[z as usize],
                     );
-                    replace(zz, xx + yy);
+                    *zz = xx + yy;
                 }
                 pointer = pointer + 4;
             }
@@ -25,13 +23,13 @@ pub fn run_program(opcodes: &mut Vec<i32>, input: &mut Vec<i32>) -> Vec<i32> {
                         if m2 == 1 { y } else { opcodes[y as usize] },
                         &mut opcodes[z as usize],
                     );
-                    replace(zz, xx * yy);
+                    *zz = xx * yy;
                 }
                 pointer = pointer + 4;
             }
             3 => {
                 let x = opcodes[pointer + 1];
-                replace(&mut opcodes[x as usize], input.pop().unwrap());
+                opcodes[x as usize] = input.pop().unwrap();
                 pointer = pointer + 2;
             }
             4 => {
@@ -69,7 +67,7 @@ pub fn run_program(opcodes: &mut Vec<i32>, input: &mut Vec<i32>) -> Vec<i32> {
                         if m2 == 1 { y } else { opcodes[y as usize] },
                         &mut opcodes[z as usize],
                     );
-                    replace(zz, if xx < yy { 1 } else { 0 });
+                    *zz = if xx < yy { 1 } else { 0 };
                 }
                 pointer = pointer + 4;
             }
@@ -80,7 +78,7 @@ pub fn run_program(opcodes: &mut Vec<i32>, input: &mut Vec<i32>) -> Vec<i32> {
                         if m2 == 1 { y } else { opcodes[y as usize] },
                         &mut opcodes[z as usize],
                     );
-                    replace(zz, if xx == yy { 1 } else { 0 });
+                    *zz = if xx == yy { 1 } else { 0 };
                 }
                 pointer = pointer + 4;
             }

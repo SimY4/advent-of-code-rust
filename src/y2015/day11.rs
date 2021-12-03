@@ -37,8 +37,7 @@ fn meet_requirement(password: &Vec<char>) -> bool {
                 .enumerate()
                 .filter_map(|(i, pair)| if pair[0] == pair[1] { Some(i) } else { None })
                 .collect::<Vec<usize>>();
-            pair_indexes.windows(2)
-                .any(|pair| pair[0] + 1 != pair[1])
+            pair_indexes.windows(2).any(|pair| pair[0] + 1 != pair[1])
         }
 }
 
